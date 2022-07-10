@@ -1,0 +1,23 @@
+
+#Use Shell script from Pub Sub Part 1and create a pubsubtopic “dftopic” and subscription “dfsub”
+
+gcloud pubsub topics create dftopic
+gcloud pubsub subscriptions create dfsub --topic dftopic
+
+
+#Use your python program from PubSub–Part 3 to publish Json messages to this topic.
+
+----> python3 Dataflow/dataflow_part2_publish.py
+
+#Create a new BigQuery dataset “dfstream” with location US, default table expiration 30 Days.
+#Create a new table “tstream” with schema for your messages.
+
+#Create a python streaming dataflow pipeline to consume data from subscription “dfsub” and write to BigQuery Table  “tstream”.
+
+python3 Dataflow/dataflow_part2_stream.py --streaming --runner DataflowRunner 
+--project vaibhav-gupta-bootcamp --region us-central1 --temp_location gs://vaibhav-gupta-dfpart/temp --job_name dataflow-custom-pipeline1
+
+
+#Execute your python program to publish 5 messages every 5 seconds for 5 minutes.
+
+---------> python3 publish_every_5_sec.py

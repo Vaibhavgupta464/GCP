@@ -1,0 +1,100 @@
+#Download data from: https://www.kaggle.com/ashishgup/netflix-rotten-tomatoes-metacritic-imdb to your Google Cloud Shell VM
+#Load raw data to GCS bucket named “firstname-lastname-netflix” using Python program
+
+GOOGLE_APPLICATION_CREDENTIALS='bigquery.json'
+
+-------------> Vi gcs.json
+{
+  "type": "service_account",
+  "project_id": "vaibhav-gupta-bootcamp",
+  "private_key_id": "6cbd1a7bf15a5dcca5a1d081a972faef30ce7555",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDS6XdZ7RJkaPxU\n13s+kHF0ztmh5lvkzAwlF2fEqzaYnKn5TeczoYKJcXj+84rDfLr6sj2uoY66ZrSH\nKpzT7Th1zj6FMZVB357VtAznU1EiQoGr+hthOicoSxU6Bn0faVkq0AGNZi/dMxgV\nFXvHrsYglEU/Lg25HeQpmPkRAB0Pwi+UnyUY4wfuoEr4pBvT+NeRpJlRzaeUh5MX\nUQSGbN2m0zd8s88mAJfqYu/bBys8982dvseIPEzh65/mvtbeuzcHsWVzJtWWbqLO\nfAfz4xCrK0ZCIei6WbgHGT0gWQngoboOMnath5F5d3dcu5CKd3MY7pDB/kzW9nNp\n0eusZQsBAgMBAAECggEACaAsGUePklOUSI75CfbvpqQWHKR1xzBk0YCK9NfXiwmD\nXGRoy9twKLOsEP6uc5OKuQxPclvfNrSfQpf4RlfKPt4lzlBf/nylNB2ehSQxTL36\nSw4EF+DejqE2m8pWBYv6TNDncTubrZ26WKP9XTSlyDDcJDEG4U7y7c8UdukpamGe\nMnOMZmLFPgLvieovzAGONUuSmZF2fy650/FjQjf6Hrvkbfow42t1cyUdi6JWeL0Q\n0+Q6ak3WBE7AFduV9OvyY83BYNERqQGDsjv1Xp1mThoyS/DwLQd/Ej/2gDL9nFyR\nXVWv3aYTrraJXHcLRPvA9CaA5BaMQb/W2W/JvMFA0QKBgQDp9kXSABiC8AjX67wz\nthkycM4RHzWLHzbft76G29hOaAE0bPv0nTkxifZXj85u53Yr6v2RUcHxkKbeMAb4\nTr9K3BI9WDxLAaG0Wxelw++9qvCAp+KVEC3DP67svRPCxPFbLBnNSByoqiXcak9b\nwIwnPkhNerqixyb5vlpSYwdUrQKBgQDmx15NMl4xu+bUdvm774oJXffV5sGH/WJq\nvFVcv3GyBQvFcptzAOruU+Ex8xLlUzwrapj1SjpOzxsgUwiurJRU9DuDozkSfe7Z\nwmvdIZdSW9qI0l/XThrUXK53D4V8kmMbMJP62WWo+kQpSH3cSUZ0hIG2WK/oAOjY\nIz0gNzjGJQKBgE3TBdadAYpMniR03d21rRwCOgmn//+PGonAbTge2Qz7u6rctdLg\nma3I3pCx3VE23TAusrosH/9ixp8SCr9+MlOMcOTG/QdWO5vq0SrqykylF+sz7UL4\nZsCT5nQJURFwwXg6azrFygKw1ndDRbKXkgdbyGE9eee7p1Nb5l+RYVbhAoGBAJfW\nTn4+CGlydoINsWvsQ4a8M6ahh22g0dLmDMfUEcsNtNv49rvou6mIuJ6zjhgh9nGe\nVfr1Fn3pl7Bh0VGTrJhkhI+soY1AHBlb6Ln6MuR2GMdymqo+8joMrKEbLjly2w/1\nmzctN8zAtH3w+xYng9p/oBRIL5xWlNw3+yyqCImdAoGAFkY4YQRBps+mXXQ1hIZN\nlq4m74MZLWfDej1vnWJ6V9Bzwa8A7pVMl3MwyccUKGb/T+jrILIAJ3MIEvayxu4T\nuquWWdP39N+pbj5kwPN8S40W8Ng600qXJ7BJdDJVd5YyTYKmNL5hv6+j5Wt/mlex\nEuvvXvt4tJSQO6c9IxD6gE0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "gcsadminsa@vaibhav-gupta-bootcamp.iam.gserviceaccount.com",
+  "client_id": "104620925549657690655",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gcsadminsa%40vaibhav-gupta-bootcamp.iam.gserviceaccount.com"
+}
+
+---------------------------------------------
+
+#Load raw data to GCS bucket named “firstname-lastname-netflix” using Python program.
+#Create a BigQuery dataset named “netflix”.  
+
+Refer code --- >  Netflix.py
+
+----------------------------------------------
+
+#Load data from GCS to BigQuery table “netflix-raw-data”, identify right data types to represent each column into BigQuery and load data using Python.
+
+Refer code --- >  Netflix2.py
+
+----------------------------------------------
+
+#Write an SQL & create View: Find out the number of titles in each Country Availability grouped by Runtime:
+
+select Country_Availability_new,Runtime,count(Title)
+from `netflix.netflix-raw-data`,UNNEST(split(Country_Availability)) as Country_Availability_new
+group by Country_Availability_new,Runtime;
+
+
+
+#Write an SQL & create View : Find out Number of Titles against each actor. Should cover all actors available in data.
+
+SELECT  actor_new,count(title)
+FROM `netflix.netflix-raw-data`,UNNEST(split(actors)) as actor_new
+group by actor_new;
+
+ 
+#Write an SQL & create View : Find out the number of Titles for each Genre. Should cover all genres available in data.
+
+SELECT  genre_new,count(title)
+FROM `netflix.netflix-raw-data`,UNNEST(split(genre)) as genre_new
+group by genre_new;
+
+
+#Write an SQL & create View : Find out the number of Titles available in each country by Genre.
+
+select Country_Availability_new, genre_new, count(title)
+from `netflix.netflix-raw-data` ,UNNEST(split(Country_Availability)) as Country_Availability_new,
+UNNEST(split(genre)) as genre_new
+group by Country_Availability_new, genre_new
+order by Country_Availability_new, genre_new;
+
+ 
+#Write an SQL & create View : Find out top 3 Box Office grossers for each year: Release Year, Title, Box Office, Actors, Genre
+
+with result as
+(SELECT extract(Year from Netflix_Release_Date) as Year,
+title, actors, genre, Boxoffice,
+dense_rank() over(partition by extract(Year from Netflix_Release_Date)
+Order by Boxoffice) as ranking
+FROM `netflix.netflix-raw-data`
+where Boxoffice is NOT NULL)
+select * from result where ranking Between 1 and 3
+order by Year
+
+
+--------------------------------------- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

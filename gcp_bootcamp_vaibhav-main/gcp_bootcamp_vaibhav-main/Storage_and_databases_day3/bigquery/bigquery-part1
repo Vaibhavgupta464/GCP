@@ -1,0 +1,41 @@
+#Create a dataset named “partition_comp”: location: US, default table expiration: 30 Days
+bq --location US mk -d --default_table_expiration 2592000  partition_comp
+
+#Create a table “version1” by uploading version 1 of "sourcefile1.csv" (10K rows)  of file in GCS bucket “firstname-lastname-fagcpbcmp” . Make sure table is partitioned on one of your datetime columns
+
+#copying old data(10K) to new new object within same bucket first
+gsutil cp gs://firstname-lastname-fagcpbcmp/sourcefile1.csv#1641551680626937 gs://firstname-lastname-fagcpbcmp/sourcefile1_10K.csv
+
+#Creating bigquery table(version1) with proper schemas partitioned on Column_J and type is Year
+bq mk --table --schema Column_A:FLOAT64,Column_B:FLOAT64,Column_C:FLOAT64,Column_D:FLOAT64,Column_E:FLOAT64,Column_F:Bool,Column_G:Bool,Column_H:Bool,Column_I:Bool,Column_J:datetime --time_partitioning_field Column_J  --time_partitioning_type YEAR vaibhav-gupta-bootcamp:partition_comp.version1
+
+#Locading data(10k) from GCS bucket to version1 table
+bq load --source_format=CSV --skip_leading_rows=1 partition_comp.version1 gs://firstname-lastname-fagcpbcmp/sourcefile1_10K.csv Column_A:FLOAT64,Column_B:FLOAT64,Column_C:FLOAT64,Column_D:FLOAT64,Column_E:FLOAT64,Column_F:Bool,Column_G:Bool,Column_H:Bool,Column_I:Bool,Column_J:datetime 
+
+
+#Create another table “version2” by uploading version 2  of "sourcefile1.csv" (15K rows) of file in GCS bucket “firstname-lastname-fagcpbcmp”. Make sure table is partitioned on same datetime column as “version1” table.
+bq mk --table --schema Column_A:FLOAT64,Column_B:FLOAT64,Column_C:FLOAT64,Column_D:FLOAT64,Column_E:FLOAT64,Column_F:Bool,Column_G:Bool,Column_H:Bool,Column_I:Bool,Column_J:datetime --time_partitioning_field Column_J  --time_partitioning_type YEAR vaibhav-gupta-bootcamp:partition_comp.version2
+
+bq load --source_format=CSV --skip_leading_rows=1 partition_comp.version2 gs://firstname-lastname-fagcpbcmp/sourcefile1.csv Column_A:FLOAT64,Column_B:FLOAT64,Column_C:FLOAT64,Column_D:FLOAT64,Column_E:FLOAT64,Column_F:Bool,Column_G:Bool,Column_H:Bool,Column_I:Bool,Column_J:datetime 
+
+
+Write an SQL to generate columns and result like below:
+Partition |    NumberOfRowsinVersion1      |       NumberOfRowsinVersion2     |       NumberOfRowsinVersion2-NumberOfRowsinVersion1
+
+------------------------------
+select a.year,NumberOfRowsinVersion1,NumberOfRowsinVersion2,(NumberOfRowsinVersion2-NumberOfRowsinVersion1)as DifferenceOfRowsVer2Ver1
+ from (
+select  extract (year from Column_J) as year,count(*) as NumberOfRowsinVersion1
+from partition_comp.version1 group by extract (year from Column_J) 
+) as a,
+(select  extract (year from Column_J) as year,count(*) as NumberOfRowsinVersion2
+from partition_comp.version2 group by extract (year from Column_J) 
+) as b 
+where a.year= b.year;
+
+------------------------------
+
+
+
+
+

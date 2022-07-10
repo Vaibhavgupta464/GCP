@@ -1,0 +1,70 @@
+#Create a separate bucket “firstname-lastname-functions” and BigQuery dataset “cfunc” for this activity using your previous code and correct service accounts.
+
+---------->python3 create_dataset_bucket.py
+
+
+#Create a python Cloud Function named “gcs_to_bigquery”to read data from GCS bucket file and load data into a BigQuery table. Create a separate bucket and BigQuery dataset for this activity.
+#Cloud function should trigger on a file arrival at GCS bucket “firstname-lastname-functions” 
+
+#Make a table within that dataset to match the CSV schema:
+bq mk --table cfunc.gcsfunc first_name:STRING,last_name:STRING,city:STRING
+
+#go to function  folder
+
+#funtion folder must contains 3 files main.py,requirements.txt,environment.yaml
+
+-------------->main.py
+import os
+from google.cloud import bigquery
+def csv_loader(data, context):
+        client = bigquery.Client()
+        dataset_id = os.environ['DATASET']
+        dataset_ref = client.dataset(dataset_id)
+        job_config = bigquery.LoadJobConfig()
+        job_config.schema = [
+                bigquery.SchemaField('first_name', 'STRING'),
+                bigquery.SchemaField('last_name', 'STRING'),
+                bigquery.SchemaField('city', 'STRING'),
+                ]
+        job_config.skip_leading_rows = 1
+        job_config.source_format = bigquery.SourceFormat.CSV
+# get the URI for uploaded CSV in GCS from 'data'
+        uri = 'gs://' + os.environ['BUCKET'] + '/' + data['name']
+# lets do this
+        load_job = client.load_table_from_uri(
+                uri,
+                dataset_ref.table(os.environ['TABLE']),
+                job_config=job_config)
+        print('Starting job {}'.format(load_job.job_id))
+        print('Function=csv_loader, Version=' + os.environ['VERSION'])
+        print('File: {}'.format(data['name']))
+        load_job.result()  # wait for table load to complete.
+        print('Job finished.')
+        destination_table = client.get_table(dataset_ref.table(os.environ['TABLE']))
+        print('Loaded {} rows.'.format(destination_table.num_rows))
+
+------------>environment.yaml
+
+BUCKET: vaibhav-gupta-functions
+DATASET: cfunc
+TABLE: gcsfunc
+VERSION: v14
+
+
+------------> requirements.txt
+
+google-cloud
+google-cloud-bigquery
+
+
+cd cloud_function
+
+#start your google cloud function
+gcloud beta functions deploy gcs_to_bigquery --runtime=python37 --trigger-resource=gs://vaibhav-gupta-functions 
+--trigger-event=google.storage.object.finalize --entry-point=csv_loader --env-vars-file=environment.yaml
+
+
+#Copy your file to gcs bucket
+gsutil cp upload.csv gs://vaibhav-gupta-functions/
+
+

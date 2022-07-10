@@ -1,0 +1,10 @@
+#Create a dataset named “baseball”
+#Create a Bigqueryview “games_attendance” to generate following result: For all closed games, find average attendance for weekday and weekend for each home team
+
+select  homeTeamName ,case when DayofWeek in (6,7) then 'weekend' else 'weekday' end day,avg(attendance) as avg_attendance from ( 
+select *,EXTRACT(DAYOFWEEK FROM startTime) DayofWeek,startTime from bigquery-public-data.baseball.schedules  where status = 'closed' 
+)
+group by day,homeTeamName  ;
+
+
+

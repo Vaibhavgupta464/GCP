@@ -1,0 +1,14 @@
+#creating ssh key
+
+echo "\n\n" | ssh-keygen -t ecdsa
+cat ~/.ssh/id_ecdsa.pub
+
+#creating VM instance in subnet1 we already created
+
+gcloud compute instances create bastion --zone=us-central1-a --machine-type=f1-micro --network vpc-bootcamp --subnet=subnet1 --no-address --maintenance-policy=MIGRATE --no-service-account --no-scopes --tags=bastion 
+--image-family=debian-10 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=bastion
+
+#creating firewall rule to allow traffic from bastion to all other instances
+
+gcloud compute firewall-rules create bastion-fwd --direction=INGRESS --priority=1000 --network=vpc-bootcamp --action=ALLOW --rules=all --source-tags=bastion
+

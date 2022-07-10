@@ -1,0 +1,42 @@
+#Create a standard class bucket “firstname-lastname-fagcpbcmp” in region us-central1 
+gsutil mb gs://firstname-lastname-fagcpbcmp
+
+
+#Enable object versioning on the bucket.
+gsutil versioning set on gs://firstname-lastname-fagcpbcmp
+
+
+#Set object lifecycle –objects to be deleted in 15 Days
+
+vi lifecycle.json
+{
+"lifecycle": {
+  "rule": [
+  {
+    "action": {"type": "Delete"},
+    "condition": {
+       "daysSinceNoncurrentTime": 15
+    }
+  }
+]
+}
+}
+
+gsutil lifecycle set lifecycle.json gs://firstname-lastname-fagcpbcmp
+
+#Upload "sourcefile1.csv" file in folder “truefile”  (10K rows created in Files section) to bucket
+gsutil cp truefile/sourcefile1.csv gs://firstname-lastname-fagcpbcmp
+
+#Upload the modified file "sourcefile1.csv" in the folder “workingfile” ( 15K rows created in Files section) to bucket
+gsutil cp workingfile/sourcefile1.csv gs://firstname-lastname-fagcpbcmp
+
+#Upload the modified file "sourcefile1.csv" in the folder “workingfile” ( 15K rows created in Files section) to bucket
+# To list both live and noncurrent versions of objects and view their generation numbers:
+gsutil ls -a gs://firstname-lastname-fagcpbcmp
+gsutil cp gs://firstname-lastname-fagcpbcmp/sourcefile1.csv#1641543395459725 /home/fagcpdebc02_011/gcsfile
+
+Verify the files in folder “truefile” and “gcsfile” are same. Use any command/tools.
+>>> import filecmp
+>>> print(filecmp.cmp('/home/fagcpdebc02_011/gcsfile/sourcefile1.csv','/home/fagcpdebc02_011/truefile/sourcefile1.csv',shallow=False))
+Output: True
+

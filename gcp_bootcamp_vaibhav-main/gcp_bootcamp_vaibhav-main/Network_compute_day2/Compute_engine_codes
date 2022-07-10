@@ -1,0 +1,23 @@
+#Create one f1-micro Debian VM named “vm1ce” in subnet1, No external IP
+gcloud compute instances create vm1ce --zone us-central1-a --machine-type=f1-micro --network=vpc-bootcamp --subnet subnet1  --no-address
+
+#Create one f1-micro Debian VM named “vm2ce” in subnet2, No external IP
+gcloud compute instances create vm2ce --zone us-central1-a --machine-type=f1-micro --network=vpc-bootcamp --subnet subnet2  --no-address
+
+#Copying “vmreccp.csv” from “vm1ce” to “vm2ce”
+#First copying the file from vm1ce to local then from local to vm2ce
+gcloud compute scp vm1ce:/home/fagcpdebc02_011/vmreccp.csv /home/fagcpdebc02_011 --zone us-central1-a
+gcloud compute scp /home/fagcpdebc02_011/vmreccp.csv vm2ce/home/fagcpdebc02_011 --zone=us-central1-a
+
+#to check if both files are same( same rows and columns)
+head -1 vmreccp.csv
+head -1 vmreccp.csv | sed 's/[^,]//g' | wc -c
+find . -name vmreccp.csv | xargs wc -l
+
+
+#Copying file from vm0ce(having external IP) to vm2ce directly
+gcloud auth login
+gcloud compute ssh vm0ce
+gcloud compute scp /home/fagcpdebc02_011/vmreccp.csv vm2ce:/home/fagcpdebc02_011 --zone us-central1-a
+
+

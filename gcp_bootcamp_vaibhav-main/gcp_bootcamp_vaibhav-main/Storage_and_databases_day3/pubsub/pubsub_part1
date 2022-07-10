@@ -1,0 +1,25 @@
+#Create a service account named “pubsubadmin” with pub sub admin role and use it from console
+-------------------------------------
+#Create a topic “topic1” and two pull subscriptions “sub1” and “sub2” for this topic
+
+gcloud pubsub topics create topic1
+gcloud pubsub subscriptions create sub1 --topic topic1
+gcloud pubsub subscriptions create sub2 --topic topic1
+
+-----------------------------------
+
+#Publish a message : { "id": 1, "name": "abc"} to the topic “topic1"
+
+gcloud pubsub topics publish topic1 --message=id=1,name="abc"
+
+----------------------------------
+
+#Publish 4 more similar messages by incrementing “id” and changing the value of “name”.
+
+gcloud pubsub topics publish topic1 --message=id=2,name="def"
+gcloud pubsub topics publish topic1 --message=id=3,name="ghi"
+gcloud pubsub topics publish topic1 --message=id=4,name="jkl"
+gcloud pubsub topics publish topic1 --message=id=5,name="mno"
+
+---------------------------------
+

@@ -1,0 +1,14 @@
+#Set object lifecycle –objects to be deleted in 15 Days
+
+{
+"lifecycle": {
+  "rule": [
+  {
+    "action": {"type": "Delete"},
+    "condition": {
+       "daysSinceNoncurrentTime": 15
+    }
+  }
+]
+}
+}

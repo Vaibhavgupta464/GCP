@@ -1,0 +1,11 @@
+Create a Python program, use Service Account “pubsubadmin”
+Use topic “topic1” created earlier
+Execute your Python program from Cloud Shell
+Task:
+Publish five messages to the “topic1” by incrementing “id” and changing the value of “name”.
+
+
+
+pip install callable
+
+--------------> Refer pubsub_part3.py

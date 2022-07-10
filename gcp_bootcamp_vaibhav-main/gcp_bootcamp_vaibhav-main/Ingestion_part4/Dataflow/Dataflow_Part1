@@ -1,0 +1,29 @@
+#Use your earlier python code to generate a CSV file “f100k.csv” with 100K rows and at least 50 columns on your Cloud Shell VM.
+
+-------> Refer code F100k.py
+
+
+---------------------------------------------
+
+#Create a new regional (us-central1) GCS bucket “firstname-lastname-dfpart”andUpload file “f100k” to GCS bucket using gsutil.
+
+gsutil cp /home/fagcpdebc02_011/Dataflow/f100k.csv gs://vaibhav-gupta-dfpart/
+
+----------------------------------------------
+
+#Create a new BigQuery dataset “dfbatch” with location US, default table expiration 30 Days, create a table “t100k” with schema for your file “f100k.csv”
+
+bq mk --table --schema Order_Quantity:INT64,PinCode:INT64,Regular_Customer:Bool,bs:STRING,city:STRING,id:int64,name:STRING,randomdata:INT64,spend:INT64,state:STRING,id10:INT64,id2:INT64,id3:INT64,id4:INT64,id5:INT64,id6:INT64,id7:INT64,id8:INT64,id9:INT64,id_1:INT64,id11:INT64,id12:INT64,id13:INT64,id14:INT64,id15:INT64,id16:INT64,id17:INT64,id18:INT64,id19:INT64,id20:INT64,id21:INT64,id22:INT64,id23:INT64,id24:INT64,id25:INT64,id26:INT64,id27:INT64,id28:INT64,id29:INT64,id30:INT64,id31:INT64,id32:INT64,id33:INT64,id34:INT64,id35:INT64,id36:INT64,id37:INT64,id38:INT64,id39:INT64,id40:INT64 vaibhav-gupta-bootcamp:dfbatch.t100k
+
+
+-------------------------------------------------
+
+
+#Create a dataflow batch pipeline using Python to load data from file “f100k.csv” in GCS bucket to BigQuery Table “t100k”. Use VPC network created at the start of the bootcamp and machine type as n1-standard-2 and not more than 3 instances while launching pipeline.
+
+sudo pip3 install apache_beam
+sudo pip install apache_beam[gcp]
+python3 Dataflow/dataflow_part1.py --runner DataFlowRunner --project vaibhav-gupta-bootcamp --network vpc-bootcamp --subnet regions/us-central1/subnetworks/subnet1 --max_num_workers=3 --region us-central1 --temp_location gs://vaibhav-gupta-dfpart/temp --staging_location gs://vaibhav-gupta-dfpart/stage
+
+
+-------------------> Refer dataflow_part1.py
