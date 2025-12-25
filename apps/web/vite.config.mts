@@ -133,6 +133,7 @@ export default defineConfig(({ mode }) => {
     'utilities/src': path.resolve(__dirname, '../../packages/utilities/src'),
     'ui/src': path.resolve(__dirname, '../../packages/ui/src'),
     'expo-clipboard': path.resolve(__dirname, 'src/lib/expo-clipboard.jsx'),
+    jsbi: path.resolve(__dirname, '../../node_modules/jsbi/dist/jsbi.mjs'), // force consistent ESM build
   }
 
   // Create process.env definitions for ALL environment variables
@@ -386,7 +387,7 @@ export default defineConfig(({ mode }) => {
       // Increase the warning limit for larger chunks
       chunkSizeWarningLimit: 800,
       commonjsOptions: {
-        include: [/jsbi/, /node_modules/], // force inclusion + conversion of jsbi CJS
+        include: [/node_modules/], // force inclusion + conversion of node_modules CJS
       },
     },
 
