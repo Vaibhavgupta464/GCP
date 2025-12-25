@@ -133,7 +133,6 @@ export default defineConfig(({ mode }) => {
     'utilities/src': path.resolve(__dirname, '../../packages/utilities/src'),
     'ui/src': path.resolve(__dirname, '../../packages/ui/src'),
     'expo-clipboard': path.resolve(__dirname, 'src/lib/expo-clipboard.jsx'),
-    jsbi: path.resolve(__dirname, '../../node_modules/jsbi/dist/jsbi.mjs'), // force consistent ESM build
   }
 
   // Create process.env definitions for ALL environment variables
@@ -158,7 +157,7 @@ export default defineConfig(({ mode }) => {
 
     resolve: {
       extensions: ['.web.tsx', '.web.ts', '.web.js', '.tsx', '.ts', '.js'],
-      modules: [path.resolve(root, 'node_modules')],
+      modules: [path.resolve(root, 'node_modules'), path.resolve(root, '../../node_modules')],
       dedupe: [
         '@uniswap/sdk-core',
         '@uniswap/v2-sdk',
