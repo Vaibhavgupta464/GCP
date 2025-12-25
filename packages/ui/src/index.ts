@@ -61,7 +61,7 @@ export {
   YGroup,
 } from 'tamagui'
 export { LinearGradient, type LinearGradientProps } from 'tamagui/linear-gradient'
-export * from 'ui/src/animations'
+export * from './animations'
 export * from './components/AnimatableCopyIcon/AnimatableCopyIcon'
 export { Button } from './components/buttons/Button/Button'
 export type { ButtonEmphasis, ButtonProps, ButtonVariant } from './components/buttons/Button/types'
