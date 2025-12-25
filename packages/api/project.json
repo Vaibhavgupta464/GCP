@@ -51,13 +51,14 @@
       }
     },
     "tradingapi:generate:openapi": {
-      "command": "echo 'Skipping openapi generation'",
+      "command": "node generate_api_object.js",
       "options": {
         "cwd": "{projectRoot}"
       },
       "cache": true,
       "inputs": [
-        "{projectRoot}/src/clients/trading/api.json"
+        "{projectRoot}/src/clients/trading/api.json",
+        "{projectRoot}/generate_api_object.js"
       ],
       "outputs": [
         "{projectRoot}/src/clients/trading/__generated__"
